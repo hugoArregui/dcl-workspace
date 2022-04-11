@@ -1,0 +1,28 @@
+version: "3.9"
+services:
+  livekit:
+    image: livekit/livekit-server:latest
+    command: --config /etc/livekit.yaml
+    restart: unless-stopped
+    ports:
+      - "7880:7880"
+    expose: [7880]
+    volumes:
+      - ./livekit/livekit.yaml:/etc/livekit.yaml
+
+  nats:
+    image: nats
+    expose:
+      - "4222"
+    ports:
+      - "8222:8222"
+
+
+  archipelago:
+    platform: linux/amd64
+    build:
+      context: ./archipelago-service
+      dockerfile: Dockerfile
+    image: archipelago
+    volumes:
+      - ./app:/app
