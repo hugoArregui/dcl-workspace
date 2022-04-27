@@ -8,10 +8,12 @@ function usage {
 -b --build: build projects
 -i --install: install projects
 -s --start: start projects
+-p --protocol: compile protocol and copy it everywhere
 "
 }
 
 
+KERNEL_PATH=${PROJECTS:-"../kernel"}
 PROJECTS=${PROJECTS:-"archipelago-service explorer-bff"}
 
 if [ $# -eq 0 ]; then
@@ -55,6 +57,18 @@ for arg in "$@"; do
         done
 
         wait
+        shift 
+        ;;
+    -p | --proto)
+        pushd proto > /dev/null
+        protoc --plugin=../$KERNEL_PATH/node_modules/ts-protoc-gen/bin/protoc-gen-ts --js_out="import_style=commonjs,binary:." --ts_out="." comms.proto
+        protoc --plugin=../$KERNEL_PATH/node_modules/ts-protoc-gen/bin/protoc-gen-ts --js_out="import_style=commonjs,binary:." --ts_out="." ws.proto
+        protoc --plugin=../$KERNEL_PATH/node_modules/ts-protoc-gen/bin/protoc-gen-ts --js_out="import_style=commonjs,binary:." --ts_out="." bff.proto
+        popd > /dev/null
+
+        cp proto/* $KERNEL_PATH/packages/shared/comms/v4/proto
+        cp proto/* explorer-bff/src/controllers/proto/
+
         shift 
         ;;
     -h | --help)
