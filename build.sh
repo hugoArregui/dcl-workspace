@@ -1,13 +1,18 @@
 #!/bin/bash
 
+set -e
+
 function usage {
   echo -e "usage: 
 
 -b --build: build projects
 -i --install: install projects
+-s --start: start projects
 "
 }
 
+
+PROJECTS=${PROJECTS:-"archipelago-service explorer-bff"}
 
 if [ $# -eq 0 ]; then
     usage 
@@ -23,37 +28,31 @@ for arg in "$@"; do
         shift
         ;;
     -i | --install)
-        pushd archipelago-service
-        npm ci
-        popd
-
-        pushd explorer-bff
-        npm ci
-        popd
+        for project in $PROJECTS; do
+          pushd $project > /dev/null
+          npm ci
+          popd > /dev/null
+        done
 
         shift
         ;;
     -b | --build)
-        pushd archipelago-service
-        npm run build
-        popd
-
-        pushd explorer-bff
-        npm run build
-        popd
+        for project in $PROJECTS; do
+          pushd $project > /dev/null
+          npm run build
+          popd > /dev/null
+        done
 
         shift 
         ;;
     -s | --start)
         nats-server &
 
-        pushd archipelago-service
-        npm run start &
-        popd
-
-        pushd explorer-bff
-        npm run start &
-        popd
+        for project in $PROJECTS; do
+          pushd $project > /dev/null
+          npm run start &
+          popd > /dev/null
+        done
 
         wait
         shift 
