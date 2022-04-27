@@ -5,6 +5,7 @@ set -e
 function usage {
   echo -e "usage: 
 
+-u --update: update projects
 -b --build: build projects
 -i --install: install projects
 -s --start: start projects
@@ -64,10 +65,12 @@ for arg in "$@"; do
         protoc --plugin=../$KERNEL_PATH/node_modules/ts-protoc-gen/bin/protoc-gen-ts --js_out="import_style=commonjs,binary:." --ts_out="." comms.proto
         protoc --plugin=../$KERNEL_PATH/node_modules/ts-protoc-gen/bin/protoc-gen-ts --js_out="import_style=commonjs,binary:." --ts_out="." ws.proto
         protoc --plugin=../$KERNEL_PATH/node_modules/ts-protoc-gen/bin/protoc-gen-ts --js_out="import_style=commonjs,binary:." --ts_out="." bff.proto
+        protoc --plugin=../$KERNEL_PATH/node_modules/ts-protoc-gen/bin/protoc-gen-ts --js_out="import_style=commonjs,binary:." --ts_out="." nats.proto
         popd > /dev/null
 
         cp proto/* $KERNEL_PATH/packages/shared/comms/v4/proto
         cp proto/* explorer-bff/src/controllers/proto/
+        cp proto/* archipelago-service/src/controllers/proto/
 
         shift 
         ;;
