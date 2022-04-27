@@ -1,6 +1,0 @@
-[submodule "archipelago-service"]
-	path = archipelago-service
-	url = git@github.com/decentraland/archipelago-service.git
-[submodule "explorer-bff"]
-	path = explorer-bff
-	url = git@github.com:decentraland/explorer-bff.git

@@ -24,12 +24,10 @@ fi
 
 for arg in "$@"; do
     case $arg in
-    -u | --update)
-        git submodule update --remote archipelago-service
-        git submodule update --remote explorer-bff
-
-        shift
-        ;;
+    --init )
+      git clone git@github.com:decentraland/archipelago-service.git || git clone git@github.com:decentraland/explorer-bff.git
+      shift
+      ;;
     -i | --install)
         for project in $PROJECTS; do
           pushd $project > /dev/null
