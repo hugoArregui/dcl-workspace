@@ -25,7 +25,8 @@ fi
 for arg in "$@"; do
     case $arg in
     --clone )
-      git clone git@github.com:decentraland/archipelago-service.git || git clone git@github.com:decentraland/explorer-bff.git
+      git clone git@github.com:decentraland/archipelago-service.git || echo "archipelago-service already cloned"
+      git clone git@github.com:decentraland/explorer-bff.git || echo "explorer-bff already cloned"
       shift
       ;;
     -i | --install)
