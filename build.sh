@@ -73,11 +73,9 @@ for arg in "$@"; do
 
         shift 
         ;;
-    -h | --help)
-        usage # run usage function on help
-        ;;
     *)
         usage # run usage function if wrong argument provided
+        exit 1
         ;;
     esac
 done
