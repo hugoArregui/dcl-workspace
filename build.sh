@@ -5,10 +5,10 @@ set -e
 function usage {
   echo -e "usage: 
 
--u --update: update projects
--b --build: build projects
--i --install: install projects
--s --start: start projects
+--clone: clone projects
+-b --build: run npm run build on each project
+-i --install: run npm ci on each project 
+-s --start: run npm run start on each project 
 -p --protocol: compile protocol and copy it everywhere
 "
 }
@@ -24,7 +24,7 @@ fi
 
 for arg in "$@"; do
     case $arg in
-    --init )
+    --clone )
       git clone git@github.com:decentraland/archipelago-service.git || git clone git@github.com:decentraland/explorer-bff.git
       shift
       ;;

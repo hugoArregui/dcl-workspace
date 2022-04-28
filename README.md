@@ -1,16 +1,17 @@
-# Init
+# Requeriments
 
 - Ensure nats-server is installed
-- `git submodule init`
+- Install protoc if you want to be able to compile the protobuf protocols
 
 # Usage
 
 ```
 ./build.sh usage:
 
--b --build: build projects
--i --install: install projects
--s --start: start projects
+--clone: clone projects
+-b --build: run npm run build on each project
+-i --install: run npm ci on each project
+-s --start: run npm run start on each project
 -p --protocol: compile protocol and copy it everywhere
 ```
 
