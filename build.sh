@@ -15,7 +15,7 @@ function usage {
 
 
 KERNEL_PATH=${PROJECTS:-"../kernel"}
-PROJECTS=${PROJECTS:-"archipelago-service explorer-bff lighthouse"}
+PROJECTS=${PROJECTS:-"archipelago-service explorer-bff lighthouse catalys-comms-peer"}
 
 if [ $# -eq 0 ]; then
     usage 
@@ -28,6 +28,7 @@ for arg in "$@"; do
       git clone git@github.com:decentraland/archipelago-service.git || echo "archipelago-service already cloned"
       git clone git@github.com:decentraland/explorer-bff.git || echo "explorer-bff already cloned"
       git clone git@github.com:decentraland/lighthouse.git || echo "lighthouse already cloned"
+      git clone git@github.com:decentraland/catalyst-comms-peer.git || echo "catalys-comms-peer already cloned"
       shift
       ;;
     -i | --install)
