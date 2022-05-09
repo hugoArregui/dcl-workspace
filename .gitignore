@@ -1,3 +1,4 @@
+var
 
 proto/*.js
 proto/*.ts
@@ -6,3 +7,5 @@ archipelago-service
 explorer-bff
 comms3-livekit-transport
 libpeer-comms-v3
+lighthouse
+

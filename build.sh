@@ -15,7 +15,7 @@ function usage {
 
 
 KERNEL_PATH=${PROJECTS:-"../kernel"}
-PROJECTS=${PROJECTS:-"archipelago-service explorer-bff"}
+PROJECTS=${PROJECTS:-"archipelago-service explorer-bff lighthouse"}
 
 if [ $# -eq 0 ]; then
     usage 
@@ -27,12 +27,19 @@ for arg in "$@"; do
     --clone )
       git clone git@github.com:decentraland/archipelago-service.git || echo "archipelago-service already cloned"
       git clone git@github.com:decentraland/explorer-bff.git || echo "explorer-bff already cloned"
+      git clone git@github.com:decentraland/lighthouse.git || echo "lighthouse already cloned"
       shift
       ;;
     -i | --install)
         for project in $PROJECTS; do
           pushd $project > /dev/null
-          npm ci
+          if [ -f "package-lock.json" ]; then
+            npm ci
+          elif  [ -f "yarn.lock" ]; then
+            npx yarn install --frozen-lockfile
+          else
+            npm i
+          fi
           popd > /dev/null
         done
 
@@ -50,9 +57,11 @@ for arg in "$@"; do
     -s | --start)
         nats-server &
 
+        mkdir -p var/log
+
         for project in $PROJECTS; do
           pushd $project > /dev/null
-          npm run start &
+          npm run start > "../var/log/$project.log"  &
           popd > /dev/null
         done
 
@@ -79,3 +88,5 @@ for arg in "$@"; do
         ;;
     esac
 done
+
+
