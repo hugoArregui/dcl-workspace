@@ -12,12 +12,13 @@ function usage {
 -b --build: run npm run build on each project
 -i --install: run npm ci on each project 
 -s --start: run npm run start on each project 
+-m --multitail: run multitail for the started projects
 "
 }
 
-KERNEL_PATH=${KERNEL_PATH=:-"../kernel"}
+KERNEL_PATH=${KERNEL_PATH:-"../kernel"}
 STARTABLE_PROJECTS="archipelago-service explorer-bff lighthouse"
-ALL_PROJECTS="$STARTTABLE_PROJECTS catalyst-comms-peer"
+ALL_PROJECTS="$STARTABLE_PROJECTS catalyst-comms-peer comms3-livekit-transport"
 
 if [ $# -eq 0 ]; then
   usage 
@@ -27,6 +28,7 @@ fi
 INSTALL=0
 BUILD=0
 START=0
+MULTITAIL=0
 
 for arg in "$@"; do
   case $arg in
@@ -35,31 +37,43 @@ for arg in "$@"; do
       git clone git@github.com:decentraland/explorer-bff.git || echo "explorer-bff already cloned"
       git clone git@github.com:decentraland/lighthouse.git || echo "lighthouse already cloned"
       git clone git@github.com:decentraland/catalyst-comms-peer.git || echo "catalys-comms-peer already cloned"
+      git clone git@github.com:decentraland/comms3-livekit-transport.git  || echo "comms3-livekit-transport  already cloned"
       shift
       ;;
     --proto)
       pushd proto > /dev/null
-      protoc --plugin=../$KERNEL_PATH/node_modules/ts-protoc-gen/bin/protoc-gen-ts --js_out="import_style=commonjs,binary:." --ts_out="." comms.proto
-      protoc --plugin=../$KERNEL_PATH/node_modules/ts-protoc-gen/bin/protoc-gen-ts --js_out="import_style=commonjs,binary:." --ts_out="." ws.proto
-      protoc --plugin=../$KERNEL_PATH/node_modules/ts-protoc-gen/bin/protoc-gen-ts --js_out="import_style=commonjs,binary:." --ts_out="." bff.proto
-      protoc --plugin=../$KERNEL_PATH/node_modules/ts-protoc-gen/bin/protoc-gen-ts --js_out="import_style=commonjs,binary:." --ts_out="." nats.proto
+      protoc --plugin=../$KERNEL_PATH/node_modules/.bin/protoc-gen-ts --js_out="import_style=commonjs,binary:." --ts_out="." comms.proto
+      protoc --plugin=../$KERNEL_PATH/node_modules/.bin/protoc-gen-ts --js_out="import_style=commonjs,binary:." --ts_out="." ws.proto
+      protoc --plugin=../$KERNEL_PATH/node_modules/.bin/protoc-gen-ts --js_out="import_style=commonjs,binary:." --ts_out="." bff.proto
+      protoc --plugin=../$KERNEL_PATH/node_modules/.bin/protoc-gen-ts --js_out="import_style=commonjs,binary:." --ts_out="." archipelago.proto
+      protoc --plugin=../$KERNEL_PATH/node_modules/.bin/protoc-gen-ts --js_out="import_style=commonjs,binary:." --ts_out="." p2p.proto
       popd > /dev/null
 
       cp proto/* $KERNEL_PATH/packages/shared/comms/v4/proto
       cp proto/* explorer-bff/src/controllers/proto/
-      cp proto/* archipelago-service/src/controllers/proto/
+      cp proto/archipelago* archipelago-service/src/controllers/proto/
 
       shift 
       ;;
     --link)
-      shift 
       pushd catalyst-comms-peer > /dev/null
+      npm link
+      popd > /dev/null
+
+      pushd comms3-livekit-transport > /dev/null
       npm link
       popd > /dev/null
 
       pushd $KERNEL_PATH > /dev/null
       npm link @dcl/catalyst-peer
+      npm link @dcl/comms3-livekit-transport
       popd > /dev/null
+
+      shift 
+      ;;
+    -n | --nats)
+      nats-server &
+      shift 
       ;;
     -i | --install)
       INSTALL=1
@@ -69,12 +83,12 @@ for arg in "$@"; do
       BUILD=1
       shift 
       ;;
-    -n | --nats)
-      nats-server &
-      shift 
-      ;;
     -s | --start)
       START=1
+      shift 
+      ;;
+    -m | --multitail)
+      MULTITAIL=1
       shift 
       ;;
     -*)
@@ -89,7 +103,8 @@ done
 
 
 PROJECTS=$ALL_PROJECTS
-if [ "$@" ]; then
+R=$(echo "$@" | xargs)
+if [ -n  "$R"  ]; then
   PROJECTS=$@
 fi
 
@@ -104,9 +119,11 @@ for project in $PROJECTS; do
       npm i
     fi
   fi
+
   if [ $BUILD -eq 1 ]; then
     npm run build
   fi
+
   popd > /dev/null
 done
 
@@ -114,7 +131,7 @@ if [ $START -eq 1 ]; then
   mkdir -p var/log
 
   PROJECTS_TO_START=$STARTABLE_PROJECTS
-  if [ "$@" ]; then
+  if [ -n "$R" ]; then
     PROJECTS_TO_START=$@
   fi
 
@@ -123,5 +140,9 @@ if [ $START -eq 1 ]; then
     npm run start &> "../var/log/$project.log"  &
     popd > /dev/null
   done
+
+  if [ $MULTITAIL -eq 1 ]; then
+    multitail var/log/*.log
+  fi
   wait
 fi

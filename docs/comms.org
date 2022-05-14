@@ -245,5 +245,9 @@ Our current idea is to connect BFF (for messages across scenes) and transports t
 
 * NATS Messages
 
-- =peer.<id>.hearbeat=
-- =peer.<id>.island_changed=
+- =peer.<peer_id>.hearbeat= (data defined in archipelago.proto/HeartbeatMessage)
+- =peer.<peer_id>.connect= (no data)
+- =peer.<peer_id>.disconnect= (no data)
+- =peer.<peer_id>.island_changed= (data defined in archipelago.proto/IslandChangedMessage)
+- =island.<island_id>.peer_left= (data defined in archipelago.proto/LeftIslandMessage)
+- =island.<island_id>.peer_join= (data defined in archipelago.proto/JoinIslandMessage)
