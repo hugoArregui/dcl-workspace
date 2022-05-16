@@ -2,6 +2,13 @@
 
 set -e
 
+trap 'catch' ERR
+
+catch() {
+  echo "error: killing child processes"
+  pkill -kill  -P $$
+}
+
 function usage {
   echo -e "usage: 
 
@@ -17,8 +24,8 @@ function usage {
 }
 
 KERNEL_PATH=${KERNEL_PATH:-"../kernel"}
-STARTABLE_PROJECTS="archipelago-service explorer-bff lighthouse"
-ALL_PROJECTS="$STARTABLE_PROJECTS catalyst-comms-peer comms3-livekit-transport"
+STARTABLE_PROJECTS="archipelago-service explorer-bff"
+ALL_PROJECTS="$STARTABLE_PROJECTS comms3-livekit-transport"
 
 if [ $# -eq 0 ]; then
   usage 
@@ -28,6 +35,7 @@ fi
 INSTALL=0
 BUILD=0
 START=0
+GIT_STATUS=0
 MULTITAIL=0
 
 for arg in "$@"; do
@@ -49,8 +57,14 @@ for arg in "$@"; do
       protoc --plugin=../$KERNEL_PATH/node_modules/.bin/protoc-gen-ts --js_out="import_style=commonjs,binary:." --ts_out="." p2p.proto
       popd > /dev/null
 
+      # kernel
       cp proto/* $KERNEL_PATH/packages/shared/comms/v4/proto
-      cp proto/* explorer-bff/src/controllers/proto/
+
+      # bff
+      cp proto/bff* explorer-bff/src/controllers/proto/
+      cp proto/ws* explorer-bff/src/controllers/proto/
+
+      # archipelago
       cp proto/archipelago* archipelago-service/src/controllers/proto/
 
       shift 
@@ -65,7 +79,6 @@ for arg in "$@"; do
       popd > /dev/null
 
       pushd $KERNEL_PATH > /dev/null
-      npm link @dcl/catalyst-peer
       npm link @dcl/comms3-livekit-transport
       popd > /dev/null
 
@@ -89,6 +102,10 @@ for arg in "$@"; do
       ;;
     -m | --multitail)
       MULTITAIL=1
+      shift 
+      ;;
+    --status)
+      GIT_STATUS=1
       shift 
       ;;
     -*)
@@ -122,6 +139,12 @@ for project in $PROJECTS; do
 
   if [ $BUILD -eq 1 ]; then
     npm run build
+  fi
+
+  if [ $GIT_STATUS -eq 1 ]; then
+    printf "\e[33;1m$project:\n\e[0m"
+    git status
+    echo ""
   fi
 
   popd > /dev/null
