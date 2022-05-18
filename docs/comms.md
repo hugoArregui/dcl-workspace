@@ -1,7 +1,7 @@
-    ---
-    title: "V3"
-    slug: "/contributor/comms/v3"
-    ---
+---
+title: "V3"
+slug: "/contributor/comms/v3"
+---
 
 
 # Overview
