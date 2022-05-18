@@ -1,7 +1,11 @@
+#+OPTIONS: toc:nil
+
+#+BEGIN_EXAMPLE
 ---
 title: "V3"
 slug: "/contributor/comms/v3"
 ---
+#+END_EXAMPLE
 
 * Overview
 
