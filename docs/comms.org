@@ -1,3 +1,8 @@
+---
+title: "V3"
+slug: "/contributor/comms/v3"
+---
+
 * Overview
 
 The idea of this new version of comms is to leverage the concept of an island as a unit, and be able to define specific settings per island. By doing so, we have the flexibility to deploy high-performant services when needed, while providing alternatives for extensibility or resource-optimization. We call each alternative a *transport*.
@@ -21,7 +26,7 @@ With regards to DCL platform alone (that is, without third-party servers), users
 participant Kernel as K
 participant BFF as BFF
 participant Archipelago as A
-participant "Room Service" as Transport
+participant Transport as T
 
 == Handshake ==
 
@@ -39,7 +44,7 @@ BFF->A: NATS: peer.<id>.heartbeat
 A->BFF: NATS: peer.<id>.island_changed \n(includes connection string to connect to a transport)
 BFF->K: change island message \n(includes connection string to connect a transport)
 
-K->Transport: Connect using connection string
+K->T: Connect using connection string
 #+end_src
 
 #+RESULTS:

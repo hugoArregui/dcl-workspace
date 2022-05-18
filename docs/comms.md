@@ -1,19 +1,26 @@
 
 # Table of Contents
 
-1.  [Overview](#overview)
-2.  [Handshake](#handshake)
-3.  [Global messages: message bus](#global-messages-message-bus)
-4.  [LiveKit Transport](#livekit-transport)
-5.  [WS Transport](#ws-transport)
-6.  [Peer-to-peer](#peer-to-peer)
-7.  [Next steps: Scale with multiple nodes](#next-steps-scale-with-multiple-nodes)
-8.  [Next steps: Third-party servers](#next-steps-third-party-servers)
-    1.  [Scene messages](#scene-messages)
-    2.  [LiveKit](#livekit)
-    3.  [WS](#ws)
-9.  [TBD](#tbd)
-10. [NAT's Messages](#nats-messages)
+1.  [Overview](#orgdc6510e)
+2.  [Handshake](#org45cd2fa)
+3.  [Global messages: message bus](#org4453116)
+4.  [LiveKit Transport](#org540ff8a)
+5.  [WS Transport](#org7c189b0)
+6.  [Peer-to-peer](#orgbb05260)
+7.  [Next steps: Scale with multiple nodes](#org4634d14)
+    1.  [Scene messages](#orgdc8632b)
+    2.  [LiveKit](#orgbb6e71a)
+    3.  [WS](#org5286623)
+8.  [TBD](#orgf3fe91c)
+9.  [NATS Messages](#orga9a0aa7)
+
+&#x2014;
+title: "V3"
+slug: "/contributor/comms/v3"
+&#x2014;
+
+
+<a id="orgdc6510e"></a>
 
 # Overview
 
@@ -27,6 +34,9 @@ We will support three types of transport for starters:
 
 With regards to DCL platform alone (that is, without third-party servers), users mostly need to receive information from peers on the same island, so the transports will be in charge of broadcasting information between peers on a given island. For global messages (for example, scene messages), we will use the BFF.
 
+
+<a id="org45cd2fa"></a>
+
 # Handshake
 
 -   The BFF acts as the entry point to the comms services. Users authenticate against this service using their addresses.
@@ -35,11 +45,17 @@ With regards to DCL platform alone (that is, without third-party servers), users
 
 ![img](comms-v3-overview.png)
 
+
+<a id="org4453116"></a>
+
 # Global messages: message bus
 
 For global messages (that is, messages across an island, for example, scene messages) we will rely on the BFF itself, in the future, this could be moved to its own project, the point is, this is not part of the transport's duties.
 
 ![img](comms-v3-global.png)
+
+
+<a id="org540ff8a"></a>
 
 # LiveKit Transport
 
@@ -47,15 +63,24 @@ For global messages (that is, messages across an island, for example, scene mess
 
 ![img](comms-v3-livekit.png)
 
+
+<a id="org7c189b0"></a>
+
 # WS Transport
 
 A simple WS socket that classifies peers into rooms (islands) and broadcast messages inside the room. It uses JWT authentication with a shared secret (generated in Archipelago).
 
 ![img](comms-v3-ws-room-service.png)
 
+
+<a id="orgbb05260"></a>
+
 # Peer-to-peer
 
 ![img](comms-v3-peer-to-peer.png)
+
+
+<a id="org4634d14"></a>
 
 # Next steps: Scale with multiple nodes
 
@@ -63,31 +88,48 @@ Archipelago should be able to register transport nodes and be able to balance is
 
 ![img](comms-v3-scale.png)
 
-# Next steps: Third-party servers
-
 Owners may want to connect third-party servers to their scenes, such as game servers or state servers. Those servers may want to receive or publish information to/from users on a given island or globally to all the people in a scene.
 
 Our current idea is to connect BFF (for messages across scenes) and transports to the NATS cluster, and then expose a service that will sit between NATS and third-party service to be able to subscribe and publish messages to the cluster.
+
+
+<a id="orgdc8632b"></a>
 
 ## Scene messages
 
 ![img](comms-v3-third-party-server-bff.png)
 
+
+<a id="orgbb6e71a"></a>
+
 ## LiveKit
 
 ![img](comms-v3-third-party-server-livekit.png)
+
+
+<a id="org5286623"></a>
 
 ## WS
 
 ![img](comms-v3-third-party-server-ws.png)
 
+
+<a id="orgf3fe91c"></a>
+
 # TBD
 
--   How/where do we deploy LiveKit?
--   Third-Party Servers on P2P Transport
+-   How/where do we deploy livekit?
+-   Third Party Servers on P2P Transport
+
+
+<a id="orga9a0aa7"></a>
 
 # NATS Messages
 
--   `peer.<id>.hearbeat`
--   `peer.<id>.island_changed`
+-   `peer.<peer_id>.hearbeat` (data defined in archipelago.proto/HeartbeatMessage)
+-   `peer.<peer_id>.connect` (no data)
+-   `peer.<peer_id>.disconnect` (no data)
+-   `peer.<peer_id>.island_changed` (data defined in archipelago.proto/IslandChangedMessage)
+-   `island.<island_id>.peer_left` (data defined in archipelago.proto/LeftIslandMessage)
+-   `island.<island_id>.peer_join` (data defined in archipelago.proto/JoinIslandMessage)
 
