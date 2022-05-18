@@ -4,7 +4,7 @@
             "name": "Comms",
             "children": [
                 {
-                    "name": "V3",
+                    "name": "v3",
                     "slug": "/contributor/comms/v3"
                 }
             ]
