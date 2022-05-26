@@ -1,12 +1,3 @@
-#+OPTIONS: toc:nil
-
-#+BEGIN_EXAMPLE
----
-title: "V3"
-slug: "/contributor/comms/v3"
----
-#+END_EXAMPLE
-
 * Overview
 
 The idea of this new version of comms is to leverage the concept of an island as a unit, and be able to define specific settings per island. By doing so, we have the flexibility to deploy high-performant services when needed, while providing alternatives for extensibility or resource-optimization. We call each alternative a *transport*.
@@ -254,9 +245,10 @@ Our current idea is to connect BFF (for messages across scenes) and transports t
 
 * NATS Messages
 
-- =peer.<peer_id>.hearbeat= (data defined in archipelago.proto/HeartbeatMessage)
+- =client-proto.peer.<peer_id>.hearbeat= (data defined in archipelago.proto/HeartbeatMessage)
 - =peer.<peer_id>.connect= (no data)
 - =peer.<peer_id>.disconnect= (no data)
-- =peer.<peer_id>.island_changed= (data defined in archipelago.proto/IslandChangedMessage)
-- =island.<island_id>.peer_left= (data defined in archipelago.proto/LeftIslandMessage)
-- =island.<island_id>.peer_join= (data defined in archipelago.proto/JoinIslandMessage)
+- =client-proto.peer.<peer_id>.island_changed= (data defined in archipelago.proto/IslandChangedMessage)
+- =client-proto.island.<island_id>.peer_left= (data defined in archipelago.proto/LeftIslandMessage)
+- =client-proto.island.<island_id>.peer_join= (data defined in archipelago.proto/JoinIslandMessage)
+  
