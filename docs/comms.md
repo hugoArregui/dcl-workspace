@@ -54,7 +54,7 @@ A simple WS socket that classifies peers into rooms (islands) and broadcast mess
 
 # Next steps: Scale with multiple nodes
 
-Archipelago should be able to register transport nodes and be able to balance islands not only in the available transports but also according to a set of owner-defined rules, in order to, for example, use LiveKit for an island in the casino and p2p in a plaza.
+Archipelago should be able to register transport nodes and be able to balance islands not only in the available transports but also according to a set of owner-defined rules, in order to, for example, use LiveKit for an island in a very crowded place and p2p in a place with very few peers.
 
 ![img](comms-v3-scale.png)
 
