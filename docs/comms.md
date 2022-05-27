@@ -3,6 +3,23 @@ title: "V3"
 slug: "/contributor/comms/v3"
 ---
 
+# Table of Contents
+
+1.  [Overview](#org8160ed6)
+2.  [Handshake](#org37981f4)
+3.  [Global messages: message bus](#org39a3731)
+4.  [LiveKit Transport](#orga475ac4)
+5.  [WS Transport](#orga9ea769)
+6.  [Peer-to-peer](#org40091d7)
+7.  [Next steps: Scale with multiple nodes](#orgdfd7cd7)
+    1.  [Scene messages](#orgbb5ac90)
+    2.  [LiveKit](#org167ef50)
+    3.  [WS](#org1a11b14)
+8.  [TBD](#org42b1c04)
+9.  [NATS Messages](#orgcd49d31)
+
+
+<a id="org8160ed6"></a>
 
 # Overview
 
@@ -17,6 +34,8 @@ We will support three types of transport for starters:
 With regards to DCL platform alone (that is, without third-party servers), users mostly need to receive information from peers on the same island, so the transports will be in charge of broadcasting information between peers on a given island. For global messages (for example, scene messages), we will use the BFF.
 
 
+<a id="org37981f4"></a>
+
 # Handshake
 
 -   The BFF acts as the entry point to the comms services. Users authenticate against this service using their addresses.
@@ -26,12 +45,16 @@ With regards to DCL platform alone (that is, without third-party servers), users
 ![img](comms-v3-overview.png)
 
 
+<a id="org39a3731"></a>
+
 # Global messages: message bus
 
 For global messages (that is, messages across an island, for example, scene messages) we will rely on the BFF itself, in the future, this could be moved to its own project, the point is, this is not part of the transport's duties.
 
 ![img](comms-v3-global.png)
 
+
+<a id="orga475ac4"></a>
 
 # LiveKit Transport
 
@@ -40,6 +63,8 @@ For global messages (that is, messages across an island, for example, scene mess
 ![img](comms-v3-livekit.png)
 
 
+<a id="orga9ea769"></a>
+
 # WS Transport
 
 A simple WS socket that classifies peers into rooms (islands) and broadcast messages inside the room. It uses JWT authentication with a shared secret (generated in Archipelago).
@@ -47,10 +72,14 @@ A simple WS socket that classifies peers into rooms (islands) and broadcast mess
 ![img](comms-v3-ws-room-service.png)
 
 
+<a id="org40091d7"></a>
+
 # Peer-to-peer
 
 ![img](comms-v3-peer-to-peer.png)
 
+
+<a id="orgdfd7cd7"></a>
 
 # Next steps: Scale with multiple nodes
 
@@ -63,20 +92,28 @@ Owners may want to connect third-party servers to their scenes, such as game ser
 Our current idea is to connect BFF (for messages across scenes) and transports to the NATS cluster, and then expose a service that will sit between NATS and third-party service to be able to subscribe and publish messages to the cluster.
 
 
+<a id="orgbb5ac90"></a>
+
 ## Scene messages
 
 ![img](comms-v3-third-party-server-bff.png)
 
+
+<a id="org167ef50"></a>
 
 ## LiveKit
 
 ![img](comms-v3-third-party-server-livekit.png)
 
 
+<a id="org1a11b14"></a>
+
 ## WS
 
 ![img](comms-v3-third-party-server-ws.png)
 
+
+<a id="org42b1c04"></a>
 
 # TBD
 
@@ -84,12 +121,15 @@ Our current idea is to connect BFF (for messages across scenes) and transports t
 -   Third Party Servers on P2P Transport
 
 
+<a id="orgcd49d31"></a>
+
 # NATS Messages
 
--   `peer.<peer_id>.hearbeat` (data defined in archipelago.proto/HeartbeatMessage)
+-   `client-proto.peer.<peer_id>.hearbeat` (data defined in archipelago.proto/HeartbeatMessage)
 -   `peer.<peer_id>.connect` (no data)
 -   `peer.<peer_id>.disconnect` (no data)
--   `peer.<peer_id>.island_changed` (data defined in archipelago.proto/IslandChangedMessage)
--   `island.<island_id>.peer_left` (data defined in archipelago.proto/LeftIslandMessage)
--   `island.<island_id>.peer_join` (data defined in archipelago.proto/JoinIslandMessage)
+-   `client-proto.peer.<peer_id>.island_changed` (data defined in archipelago.proto/IslandChangedMessage)
+-   `client-proto.island.<island_id>.peer_left` (data defined in archipelago.proto/LeftIslandMessage)
+-   `client-proto.island.<island_id>.peer_join` (data defined in archipelago.proto/JoinIslandMessage)
+-   `client.peer.<peer_id>....` message from peer, application data
 

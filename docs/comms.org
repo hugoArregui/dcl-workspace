@@ -146,7 +146,7 @@ K->O: Send chat data
 
 * Next steps: Scale with multiple nodes
 
-Archipelago should be able to register transport nodes and be able to balance islands not only in the available transports but also according to a set of owner-defined rules, in order to, for example, use LiveKit for an island in the casino and p2p in a plaza.
+Archipelago should be able to register transport nodes and be able to balance islands not only in the available transports but also according to a set of owner-defined rules, in order to, for example, use LiveKit for an island in a very crowded place and p2p in a place with very few peers.
 
 #+begin_src plantuml :file comms-v3-scale.png
   participant Kernel as K
@@ -251,4 +251,4 @@ Our current idea is to connect BFF (for messages across scenes) and transports t
 - =client-proto.peer.<peer_id>.island_changed= (data defined in archipelago.proto/IslandChangedMessage)
 - =client-proto.island.<island_id>.peer_left= (data defined in archipelago.proto/LeftIslandMessage)
 - =client-proto.island.<island_id>.peer_join= (data defined in archipelago.proto/JoinIslandMessage)
-  
+- =client.peer.<peer_id>....= message from peer, application data
