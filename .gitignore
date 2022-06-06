@@ -6,8 +6,9 @@ proto/*.ts
 archipelago-service
 explorer-bff
 comms3-livekit-transport
+comms3-transports
 libpeer-comms-v3
 lighthouse
 catalyst-comms-peer
 rpc
-
+comms-testing
