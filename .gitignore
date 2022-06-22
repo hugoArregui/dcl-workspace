@@ -1,5 +1,7 @@
 var
 
+.env
+
 proto/*.js
 proto/*.ts
 
@@ -11,4 +13,6 @@ libpeer-comms-v3
 lighthouse
 catalyst-comms-peer
 rpc
+
 comms-testing
+comms-testing.tar.gz

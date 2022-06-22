@@ -72,7 +72,6 @@ for arg in "$@"; do
       cp proto/archipelago.proto archipelago-service/src/controllers/proto/
 
       # comms-testing
-      cp proto/comms.proto comms-testing/src/proto
       cp proto/bff/*.proto comms-testing/src/proto/bff/
       cp proto/archipelago.proto  comms-testing/src/proto
       shift 
@@ -89,6 +88,18 @@ for arg in "$@"; do
 
       pushd $KERNEL_PATH > /dev/null
       npm link @dcl/comms3-transports
+      popd > /dev/null
+
+      shift
+      ;;
+    --upgrade-transports)
+      FLAG_PROVIDED=1
+      pushd comms-testing > /dev/null
+      npm i --save @dcl/comms3-transports@next
+      popd > /dev/null
+
+      pushd $KERNEL_PATH > /dev/null
+      npm i --save @dcl/comms3-transports@next
       popd > /dev/null
 
       shift
