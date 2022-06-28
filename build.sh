@@ -45,11 +45,12 @@ for arg in "$@"; do
   case $arg in
     --clone )
       FLAG_PROVIDED=1
-      git clone git@github.com:decentraland/archipelago-service.git || echo "archipelago-service already cloned"
-      git clone git@github.com:decentraland/explorer-bff.git || echo "explorer-bff already cloned"
-      git clone git@github.com:decentraland/rpc.git  || echo "rpc already cloned"
-      git clone git@github.com:decentraland/comms3-transports.git || echo "transports already cloned"
-      git clone git@github.com:decentraland/comms-testing.git || echo "comms-testing already cloned"
+      git clone git@github.com:decentraland/archipelago-service.git || true
+      git clone git@github.com:decentraland/explorer-bff.git || true
+      git clone git@github.com:decentraland/rpc.git  || true
+      git clone git@github.com:decentraland/comms3-transports.git || true
+      git clone git@github.com:decentraland/comms-testing.git || true
+      git clone git@github.com:decentraland/ws-room-service.git || true
       shift
       ;;
     --proto)

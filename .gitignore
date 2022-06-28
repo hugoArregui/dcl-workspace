@@ -13,6 +13,7 @@ libpeer-comms-v3
 lighthouse
 catalyst-comms-peer
 rpc
+ws-room-service
 
 comms-testing
 comms-testing.tar.gz
