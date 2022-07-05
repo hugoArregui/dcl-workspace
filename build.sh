@@ -4,6 +4,8 @@ set -e
 
 trap 'catch' ERR
 
+. /opt/homebrew/opt/nvm/nvm.sh 
+
 catch() {
   echo "error: killing child processes"
   pkill -kill  -P $$
@@ -25,8 +27,8 @@ function usage {
 }
 
 KERNEL_PATH=${KERNEL_PATH:-"../kernel"}
-STARTABLE_PROJECTS="archipelago-service explorer-bff"
-ALL_PROJECTS="$STARTABLE_PROJECTS comms3-transports comms-testing"
+STARTABLE_PROJECTS="archipelago-service explorer-bff ws-room-service"
+ALL_PROJECTS="$STARTABLE_PROJECTS comms3-transports"
 
 if [ $# -eq 0 ]; then
   usage 
@@ -67,7 +69,9 @@ for arg in "$@"; do
 
       # bff
       cp proto/bff/*.proto explorer-bff/src/controllers/bff-proto/
-      cp proto/ws.proto explorer-bff/src/controllers/proto/
+
+      # ws-room-service
+      cp proto/ws.proto ws-room-service/src/proto/
 
       # archipelago
       cp proto/archipelago.proto archipelago-service/src/controllers/proto/
@@ -81,10 +85,11 @@ for arg in "$@"; do
       FLAG_PROVIDED=1
       pushd comms3-transports > /dev/null
       npm link
+      nvm exec 14 npm link
       popd > /dev/null
 
       pushd comms-testing > /dev/null
-      npm link @dcl/comms3-transports
+      nvm exec 14 npm link @dcl/comms3-transports
       popd > /dev/null
 
       pushd $KERNEL_PATH > /dev/null
@@ -96,7 +101,7 @@ for arg in "$@"; do
     --upgrade-transports)
       FLAG_PROVIDED=1
       pushd comms-testing > /dev/null
-      npm i --save @dcl/comms3-transports@next
+      nvm exec 14 npm i --save @dcl/comms3-transports@next
       popd > /dev/null
 
       pushd $KERNEL_PATH > /dev/null
@@ -195,15 +200,18 @@ if [ $START -eq 1 ]; then
     PROJECTS_TO_START=$@
   fi
 
+  LOG_FILES=""
+
   for project in $PROJECTS_TO_START; do
     pushd $project > /dev/null
     touch ../var/log/$project.log
+    LOG_FILES="$LOG_FILES var/log/$project.log"
     npm run start &> "../var/log/$project.log"  &
     popd > /dev/null
   done
 
   if [ $MULTITAIL -eq 1 ]; then
-    multitail var/log/*.log
+    multitail $LOG_FILES
   fi
   wait
 fi

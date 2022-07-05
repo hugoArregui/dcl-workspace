@@ -122,7 +122,7 @@ Transport->Others: Broadcast chat data
 * Peer-to-peer
 #+begin_src plantuml :file comms-v3-peer-to-peer.png
 participant "Kernel" as K
-participant Lighthouse as L
+participant BFF as L
 collections "Kernel..." as O
 
 == Connect ==
