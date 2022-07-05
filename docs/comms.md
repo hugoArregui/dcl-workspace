@@ -5,21 +5,21 @@ slug: "/contributor/comms/v3"
 
 # Table of Contents
 
-1.  [Overview](#org8160ed6)
-2.  [Handshake](#org37981f4)
-3.  [Global messages: message bus](#org39a3731)
-4.  [LiveKit Transport](#orga475ac4)
-5.  [WS Transport](#orga9ea769)
-6.  [Peer-to-peer](#org40091d7)
-7.  [Next steps: Scale with multiple nodes](#orgdfd7cd7)
-    1.  [Scene messages](#orgbb5ac90)
-    2.  [LiveKit](#org167ef50)
-    3.  [WS](#org1a11b14)
-8.  [TBD](#org42b1c04)
-9.  [NATS Messages](#orgcd49d31)
+1.  [Overview](#orgb4e7580)
+2.  [Handshake](#org6e5c509)
+3.  [Global messages: message bus](#orgb951a93)
+4.  [LiveKit Transport](#org2025567)
+5.  [WS Transport](#orge29f5ae)
+6.  [Peer-to-peer](#orgb5e0f03)
+7.  [Next steps: Scale with multiple nodes](#orgc9aa269)
+    1.  [Scene messages](#orgc13dab8)
+    2.  [LiveKit](#org5fcae9b)
+    3.  [WS](#org356245e)
+8.  [TBD](#org04ae126)
+9.  [NATS Messages](#orgc1b2379)
 
 
-<a id="org8160ed6"></a>
+<a id="orgb4e7580"></a>
 
 # Overview
 
@@ -34,7 +34,7 @@ We will support three types of transport for starters:
 With regards to DCL platform alone (that is, without third-party servers), users mostly need to receive information from peers on the same island, so the transports will be in charge of broadcasting information between peers on a given island. For global messages (for example, scene messages), we will use the BFF.
 
 
-<a id="org37981f4"></a>
+<a id="org6e5c509"></a>
 
 # Handshake
 
@@ -45,7 +45,7 @@ With regards to DCL platform alone (that is, without third-party servers), users
 ![img](comms-v3-overview.png)
 
 
-<a id="org39a3731"></a>
+<a id="orgb951a93"></a>
 
 # Global messages: message bus
 
@@ -54,7 +54,7 @@ For global messages (that is, messages across an island, for example, scene mess
 ![img](comms-v3-global.png)
 
 
-<a id="orga475ac4"></a>
+<a id="org2025567"></a>
 
 # LiveKit Transport
 
@@ -63,7 +63,7 @@ For global messages (that is, messages across an island, for example, scene mess
 ![img](comms-v3-livekit.png)
 
 
-<a id="orga9ea769"></a>
+<a id="orge29f5ae"></a>
 
 # WS Transport
 
@@ -72,14 +72,14 @@ A simple WS socket that classifies peers into rooms (islands) and broadcast mess
 ![img](comms-v3-ws-room-service.png)
 
 
-<a id="org40091d7"></a>
+<a id="orgb5e0f03"></a>
 
 # Peer-to-peer
 
 ![img](comms-v3-peer-to-peer.png)
 
 
-<a id="orgdfd7cd7"></a>
+<a id="orgc9aa269"></a>
 
 # Next steps: Scale with multiple nodes
 
@@ -92,28 +92,28 @@ Owners may want to connect third-party servers to their scenes, such as game ser
 Our current idea is to connect BFF (for messages across scenes) and transports to the NATS cluster, and then expose a service that will sit between NATS and third-party service to be able to subscribe and publish messages to the cluster.
 
 
-<a id="orgbb5ac90"></a>
+<a id="orgc13dab8"></a>
 
 ## Scene messages
 
 ![img](comms-v3-third-party-server-bff.png)
 
 
-<a id="org167ef50"></a>
+<a id="org5fcae9b"></a>
 
 ## LiveKit
 
 ![img](comms-v3-third-party-server-livekit.png)
 
 
-<a id="org1a11b14"></a>
+<a id="org356245e"></a>
 
 ## WS
 
 ![img](comms-v3-third-party-server-ws.png)
 
 
-<a id="org42b1c04"></a>
+<a id="org04ae126"></a>
 
 # TBD
 
@@ -121,7 +121,7 @@ Our current idea is to connect BFF (for messages across scenes) and transports t
 -   Third Party Servers on P2P Transport
 
 
-<a id="orgcd49d31"></a>
+<a id="orgc1b2379"></a>
 
 # NATS Messages
 
