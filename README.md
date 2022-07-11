@@ -1,7 +1,6 @@
 # Requeriments
 
 - Ensure nats-server is installed
-- Install protoc if you want to be able to compile the protobuf protocols
 
 # Usage
 

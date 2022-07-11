@@ -35,7 +35,7 @@ function logDebug {
   fi
 }
 
-KERNEL_PATH=${KERNEL_PATH:-"../kernel"}
+KERNEL_PATH=${KERNEL_PATH:-"$PWD/kernel"}
 STARTABLE_PROJECTS="archipelago-service explorer-bff ws-room-service"
 ALL_PROJECTS="$STARTABLE_PROJECTS comms3-transports"
 
