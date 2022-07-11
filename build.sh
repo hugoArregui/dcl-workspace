@@ -4,7 +4,7 @@ set -e
 
 trap 'catch' ERR
 
-. /opt/homebrew/opt/nvm/nvm.sh 
+. $NVM_DIR/nvm.sh 
 
 catch() {
   echo "error: killing child processes"
@@ -24,6 +24,15 @@ function usage {
 -s --start: run npm run start on each project 
 -m --multitail: run multitail for the started projects
 "
+}
+
+
+VERBOSE=1
+
+function logDebug {
+  if [ $VERBOSE -eq 1 ]; then
+    echo $*
+  fi
 }
 
 KERNEL_PATH=${KERNEL_PATH:-"../kernel"}
@@ -164,6 +173,7 @@ fi
 for project in $PROJECTS; do
   pushd $project > /dev/null
   if [ $INSTALL -eq 1 ]; then
+    logDebug "install $project"
     if [ -f "Makefile" ]; then
       make install
     elif [ -f "package-lock.json" ]; then
@@ -176,6 +186,7 @@ for project in $PROJECTS; do
   fi
 
   if [ $BUILD -eq 1 ]; then
+    logDebug "build $project"
     if [ -f "Makefile" ]; then
       make build
     else

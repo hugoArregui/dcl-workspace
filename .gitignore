@@ -14,6 +14,11 @@ lighthouse
 catalyst-comms-peer
 rpc
 ws-room-service
+kernel
+livekit-adapter
+livekit-test
 
 comms-testing
 comms-testing.tar.gz
+
+
