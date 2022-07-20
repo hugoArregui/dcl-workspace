@@ -6,6 +6,8 @@ trap 'catch' ERR
 
 . $NVM_DIR/nvm.sh 
 
+nvm use 16
+
 catch() {
   echo "error: killing child processes"
   pkill -kill  -P $$
@@ -213,7 +215,8 @@ if [ $START -eq 1 ]; then
 
   LOG_FILES=""
 
-  for project in $PROJECTS_TO_START; do
+  for rawProject in $PROJECTS_TO_START; do
+    project=${rawProject%"/"} # remove suffix "/"
     pushd $project > /dev/null
     touch ../var/log/$project.log
     LOG_FILES="$LOG_FILES var/log/$project.log"
