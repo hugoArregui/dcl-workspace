@@ -16,10 +16,8 @@ catch() {
 function usage {
   echo -e "usage: 
 
---clone: clone projects
 --proto: compile protocol and copy it everywhere
 --link-transports: link comms3-transports
---nats: start nats-server
 --status: git status on each project
 -b --build: run npm run build on each project
 -i --install: run npm ci on each project 
@@ -37,8 +35,7 @@ function logDebug {
   fi
 }
 
-KERNEL_PATH=${KERNEL_PATH:-"$PWD/kernel"}
-STARTABLE_PROJECTS="archipelago-service explorer-bff ws-room-service"
+STARTABLE_PROJECTS="archipelago-service explorer-bff"
 ALL_PROJECTS="$STARTABLE_PROJECTS comms3-transports"
 
 if [ $# -eq 0 ]; then
@@ -56,22 +53,11 @@ MULTITAIL=0
 
 for arg in "$@"; do
   case $arg in
-    --clone )
-      FLAG_PROVIDED=1
-      git clone git@github.com:decentraland/archipelago-service.git || true
-      git clone git@github.com:decentraland/explorer-bff.git || true
-      git clone git@github.com:decentraland/rpc.git  || true
-      git clone git@github.com:decentraland/comms3-transports.git || true
-      git clone git@github.com:decentraland/comms-testing.git || true
-      git clone git@github.com:decentraland/ws-room-service.git || true
-      shift
-      ;;
     --proto)
       FLAG_PROVIDED=1
       # kernel
-      mkdir -p $KERNEL_PATH/packages/shared/comms/v4/proto/bff
-      cp proto/bff/*.proto $KERNEL_PATH/packages/shared/comms/v4/proto/bff
-      cp proto/archipelago.proto  $KERNEL_PATH/packages/shared/comms/v4/proto
+      cp proto/bff/*.proto kernel/packages/shared/comms/v3/proto/bff
+      cp proto/archipelago.proto kernel/packages/shared/comms/v3/proto
 
       # comms3-transports
       cp proto/ws.proto  comms3-transports/src/proto
@@ -89,7 +75,10 @@ for arg in "$@"; do
 
       # comms-testing
       cp proto/bff/*.proto comms-testing/src/proto/bff/
-      cp proto/archipelago.proto  comms-testing/src/proto
+      cp proto/archipelago.proto comms-testing/src/proto
+
+      # catalyst-stats
+      cp proto/archipelago.proto catalyst-stats/src/proto/
       shift 
       ;;
     --link-transports)
@@ -103,7 +92,7 @@ for arg in "$@"; do
       nvm exec 14 npm link @dcl/comms3-transports
       popd > /dev/null
 
-      pushd $KERNEL_PATH > /dev/null
+      pushd kernel > /dev/null
       npm link @dcl/comms3-transports
       popd > /dev/null
 
@@ -115,16 +104,11 @@ for arg in "$@"; do
       nvm exec 14 npm i --save @dcl/comms3-transports@next
       popd > /dev/null
 
-      pushd $KERNEL_PATH > /dev/null
+      pushd kernel > /dev/null
       npm i --save @dcl/comms3-transports@next
       popd > /dev/null
 
       shift
-      ;;
-    -n | --nats)
-      FLAG_PROVIDED=1
-      nats-server &
-      shift 
       ;;
     -i | --install)
       FLAG_PROVIDED=1
@@ -137,6 +121,7 @@ for arg in "$@"; do
       shift 
       ;;
     -s | --start)
+      nats-server &
       FLAG_PROVIDED=1
       START=1
       shift 
@@ -218,9 +203,14 @@ if [ $START -eq 1 ]; then
   for rawProject in $PROJECTS_TO_START; do
     project=${rawProject%"/"} # remove suffix "/"
     pushd $project > /dev/null
-    touch ../var/log/$project.log
-    LOG_FILES="$LOG_FILES var/log/$project.log"
-    npm run start &> "../var/log/$project.log"  &
+
+    if [ $MULTITAIL -eq 1 ]; then
+      touch ../var/log/$project.log
+      LOG_FILES="$LOG_FILES var/log/$project.log"
+      npm run start &> "../var/log/$project.log"  &
+    else
+    npm run start
+    fi
     popd > /dev/null
   done
 
