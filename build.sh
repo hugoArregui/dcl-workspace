@@ -15,9 +15,6 @@ catch() {
 
 function usage {
   echo -e "usage: 
-
---proto: compile protocol and copy it everywhere
---link-transports: link comms3-transports
 --status: git status on each project
 -b --build: run npm run build on each project
 -i --install: run npm ci on each project 
@@ -35,9 +32,6 @@ function logDebug {
   fi
 }
 
-STARTABLE_PROJECTS="archipelago-service explorer-bff"
-ALL_PROJECTS="$STARTABLE_PROJECTS comms3-transports"
-
 if [ $# -eq 0 ]; then
   usage 
   exit 1
@@ -53,63 +47,6 @@ MULTITAIL=0
 
 for arg in "$@"; do
   case $arg in
-    --proto)
-      FLAG_PROVIDED=1
-      # kernel
-      cp proto/bff/*.proto kernel/packages/shared/comms/v3/proto/bff
-      cp proto/archipelago.proto kernel/packages/shared/comms/v3/proto
-
-      # comms3-transports
-      cp proto/ws.proto  comms3-transports/src/proto
-      cp proto/p2p.proto  comms3-transports/src/proto
-      cp proto/archipelago.proto  comms3-transports/src/proto
-
-      # bff
-      cp proto/bff/*.proto explorer-bff/src/controllers/bff-proto/
-
-      # ws-room-service
-      cp proto/ws.proto ws-room-service/src/proto/
-
-      # archipelago
-      cp proto/archipelago.proto archipelago-service/src/controllers/proto/
-
-      # comms-testing
-      cp proto/bff/*.proto comms-testing/src/proto/bff/
-      cp proto/archipelago.proto comms-testing/src/proto
-
-      # catalyst-stats
-      cp proto/archipelago.proto catalyst-stats/src/proto/
-      shift 
-      ;;
-    --link-transports)
-      FLAG_PROVIDED=1
-      pushd comms3-transports > /dev/null
-      npm link
-      nvm exec 14 npm link
-      popd > /dev/null
-
-      pushd comms-testing > /dev/null
-      nvm exec 14 npm link @dcl/comms3-transports
-      popd > /dev/null
-
-      pushd kernel > /dev/null
-      npm link @dcl/comms3-transports
-      popd > /dev/null
-
-      shift
-      ;;
-    --upgrade-transports)
-      FLAG_PROVIDED=1
-      pushd comms-testing > /dev/null
-      nvm exec 14 npm i --save @dcl/comms3-transports@next
-      popd > /dev/null
-
-      pushd kernel > /dev/null
-      npm i --save @dcl/comms3-transports@next
-      popd > /dev/null
-
-      shift
-      ;;
     -i | --install)
       FLAG_PROVIDED=1
       INSTALL=1
@@ -151,9 +88,8 @@ if [ $FLAG_PROVIDED -eq 0 ]; then
   exit 1
 fi
 
-PROJECTS=$ALL_PROJECTS
 R=$(echo "$@" | xargs)
-if [ -n  "$R"  ]; then
+if [ -n "$R"  ]; then
   PROJECTS=$@
 fi
 
@@ -207,9 +143,18 @@ if [ $START -eq 1 ]; then
     if [ $MULTITAIL -eq 1 ]; then
       touch ../var/log/$project.log
       LOG_FILES="$LOG_FILES var/log/$project.log"
-      npm run start &> "../var/log/$project.log"  &
+
+      if [ -f "package.json" ]; then
+        npm run start &> "../var/log/$project.log"  &
+      else
+        make start &> "../var/log/$project.log"  &
+      fi
     else
-    npm run start
+      if [ -f "package.json" ]; then
+        npm run start &
+      else
+        make start &
+      fi
     fi
     popd > /dev/null
   done

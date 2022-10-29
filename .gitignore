@@ -1,24 +1,5 @@
 var
-
 .env
-
-proto/*.js
-proto/*.ts
-
-archipelago-service
-explorer-bff
-comms3-livekit-transport
-comms3-transports
-libpeer-comms-v3
-lighthouse
-catalyst-comms-peer
-rpc
-ws-room-service
-kernel
-livekit-adapter
-livekit-test
-
-comms-testing
 comms-testing.tar.gz
 
 
